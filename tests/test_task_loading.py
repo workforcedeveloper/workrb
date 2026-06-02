@@ -6,10 +6,12 @@ import pytest
 
 from tests.test_utils import GeneralRankingTestTask
 from workrb.tasks import (
+    ESCOGradedSkillNormRanking,
     ESCOJob2SkillClassification,
     ESCOJob2SkillRanking,
     ESCOSkill2JobRanking,
     ESCOSkillNormRanking,
+    HouseGradedSkillExtractRanking,
     HouseSkillExtractRanking,
     JobBERTJobNormRanking,
     JobTitleSimilarityRanking,
@@ -17,6 +19,8 @@ from workrb.tasks import (
     MELSRanking,
     SkillMatch1kSkillSimilarityRanking,
     SkillSkapeExtractRanking,
+    SkillSkapeGradedSkillExtractRanking,
+    TechGradedSkillExtractRanking,
     TechSkillExtractRanking,
 )
 from workrb.tasks.abstract.base import DatasetSplit, Language, TaskType
@@ -50,8 +54,12 @@ def test_ranking_tasks_init_en_splits():
         ("MELORanking", MELORanking),
         ("MELSRanking", MELSRanking),
         ("SkillExtractHouseRanking", HouseSkillExtractRanking),
+        ("SkillExtractHouseGradedRanking", HouseGradedSkillExtractRanking),
         ("SkillExtractTechRanking", TechSkillExtractRanking),
+        ("SkillExtractTechGradedRanking", TechGradedSkillExtractRanking),
         ("SkillExtractSkillSkapeRanking", SkillSkapeExtractRanking),
+        ("SkillExtractSkillSkapeGradedRanking", SkillSkapeGradedSkillExtractRanking),
+        ("SkillNormESCOGradedRanking", ESCOGradedSkillNormRanking),
         ("SkillSimilarityRanking", SkillMatch1kSkillSimilarityRanking),
     ]
 
@@ -59,6 +67,12 @@ def test_ranking_tasks_init_en_splits():
         "JobTitleSimilarityRanking",
         "MELORanking",
         "MELSRanking",
+    ]
+    tasks_with_only_val_set = [
+        "SkillExtractHouseGradedRanking",
+        "SkillExtractTechGradedRanking",
+        "SkillExtractSkillSkapeGradedRanking",
+        "SkillNormESCOGradedRanking",
     ]
 
     results = {"success": [], "failures": []}
@@ -69,6 +83,8 @@ def test_ranking_tasks_init_en_splits():
     for split in splits:
         for task_name, task_class in ranking_tasks:
             if split != DatasetSplit.TEST and task_name in tasks_with_only_test_set:
+                continue
+            if split != DatasetSplit.VAL and task_name in tasks_with_only_val_set:
                 continue
             nb_total += 1
             try:

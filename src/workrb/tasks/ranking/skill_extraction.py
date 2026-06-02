@@ -11,6 +11,7 @@ from workrb.tasks.abstract.ranking_base import (
     RankingTask,
     RankingTaskGroup,
 )
+from workrb.tasks.ranking.graded_beir import GradedBEIRRankingTask
 from workrb.types import ModelInputType
 
 
@@ -347,6 +348,216 @@ class SkillXLSkillExtractRanking(BaseESCOSkillExtractRanking):
   pages={133596-133608},
   keywords={Taxonomy;Contrastive learning;Training;Annotations;Benchmark testing;Training data;Large language models;Computational efficiency;Accuracy;Terminology;Labor market analysis;text encoders;skill extraction;job title normalization},
   doi={10.1109/ACCESS.2025.3589147}
+}
+"""
+
+
+class BaseGradedSkillExtractRanking(GradedBEIRRankingTask):
+    """Base class for BEIR-layout graded skill-extraction tasks.
+
+    Queries are skill-bearing sentences ranked against the ESCO skill taxonomy.
+    The BEIR loading logic lives in :class:`GradedBEIRRankingTask`; this base
+    just pins the skill-extraction task group and query input type.
+    """
+
+    @property
+    def split_to_hf_split(self) -> dict[DatasetSplit, str]:
+        """Expose both validation and test splits."""
+        return {DatasetSplit.VAL: "validation", DatasetSplit.TEST: "test"}
+
+    @property
+    def task_group(self) -> RankingTaskGroup:
+        """Skill extraction task group."""
+        return RankingTaskGroup.SKILL_EXTRACTION
+
+    @property
+    def query_input_type(self) -> ModelInputType:
+        """Query input type for skill extraction sentences."""
+        return ModelInputType.SKILL_SENTENCE
+
+
+@register_task()
+class HouseGradedSkillExtractRanking(BaseGradedSkillExtractRanking):
+    """Skill Extraction from HOUSE Dataset with Graded Relevance.
+
+    Re-annotates the sentences from ``TechWolf/skill-extraction-house`` against
+    the full ESCO v1.1.0 skill taxonomy with a 0-4 relevance scale, following the
+    BEIR layout (``queries``, ``corpus``, ``qrels``). Score scale: 0 unrelated,
+    1 plausible in domain, 2 recommendable but off-granularity, 3 strongly implied,
+    4 explicitly demonstrated.
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(hf_name="TechWolf/Skill-extraction-House-graded", **kwargs)
+
+    @property
+    def name(self) -> str:
+        """Skill extraction HOUSE graded task name."""
+        return "Skill Extraction House Graded"
+
+    @property
+    def description(self) -> str:
+        """Skill extraction HOUSE graded task description."""
+        return (
+            "Extract skills from general text descriptions in the HOUSE subset of CAREER, "
+            "with graded 0-4 relevance against the full ESCO v1.1.0 taxonomy."
+        )
+
+    @property
+    def citation(self) -> str:
+        """Skill extraction HOUSE graded task citation."""
+        return """@inproceedings{decorte2022design,
+  articleno    = {{4}},
+  author       = {{Decorte, Jens-Joris and Van Hautte, Jeroen and Deleu, Johannes and Develder, Chris and Demeester, Thomas}},
+  booktitle    = {{Proceedings of the 2nd Workshop on Recommender Systems for Human Resources (RecSys-in-HR 2022)}},
+  editor       = {{Kaya, Mesut and Bogers, Toine and Graus, David and Mesbah, Sepideh and Johnson, Chris and Gutiérrez, Francisco}},
+  isbn         = {{9781450398565}},
+  issn         = {{1613-0073}},
+  language     = {{eng}},
+  location     = {{Seatle, USA}},
+  pages        = {{7}},
+  publisher    = {{CEUR}},
+  title        = {{Design of negative sampling strategies for distantly supervised skill extraction}},
+  url          = {{https://ceur-ws.org/Vol-3218/RecSysHR2022-paper_4.pdf}},
+  volume       = {{3218}},
+  year         = {{2022}},
+}
+"""
+
+
+@register_task()
+class TechGradedSkillExtractRanking(BaseGradedSkillExtractRanking):
+    """Skill Extraction from TECH Dataset with Graded Relevance.
+
+    Re-annotates the sentences from ``TechWolf/skill-extraction-tech`` against
+    the full ESCO v1.1.0 skill taxonomy with a 0-4 relevance scale, following the
+    BEIR layout (``queries``, ``corpus``, ``qrels``). Score scale: 0 unrelated,
+    1 plausible in domain, 2 recommendable but off-granularity, 3 strongly implied,
+    4 explicitly demonstrated.
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(hf_name="TechWolf/Skill-extraction-Tech-graded", **kwargs)
+
+    @property
+    def name(self) -> str:
+        """Skill extraction TECH graded task name."""
+        return "Skill Extraction Tech Graded"
+
+    @property
+    def description(self) -> str:
+        """Skill extraction TECH graded task description."""
+        return (
+            "Extract skills from technical text descriptions in the TECH subset of CAREER, "
+            "with graded 0-4 relevance against the full ESCO v1.1.0 taxonomy."
+        )
+
+    @property
+    def citation(self) -> str:
+        """Skill extraction TECH graded task citation."""
+        return """@inproceedings{decorte2022design,
+  articleno    = {{4}},
+  author       = {{Decorte, Jens-Joris and Van Hautte, Jeroen and Deleu, Johannes and Develder, Chris and Demeester, Thomas}},
+  booktitle    = {{Proceedings of the 2nd Workshop on Recommender Systems for Human Resources (RecSys-in-HR 2022)}},
+  editor       = {{Kaya, Mesut and Bogers, Toine and Graus, David and Mesbah, Sepideh and Johnson, Chris and Gutiérrez, Francisco}},
+  isbn         = {{9781450398565}},
+  issn         = {{1613-0073}},
+  language     = {{eng}},
+  location     = {{Seatle, USA}},
+  pages        = {{7}},
+  publisher    = {{CEUR}},
+  title        = {{Design of negative sampling strategies for distantly supervised skill extraction}},
+  url          = {{https://ceur-ws.org/Vol-3218/RecSysHR2022-paper_4.pdf}},
+  volume       = {{3218}},
+  year         = {{2022}},
+}
+"""
+
+
+@register_task()
+class SkillSkapeGradedSkillExtractRanking(BaseGradedSkillExtractRanking):
+    """Skill Extraction from SkillSkape Dataset with Graded Relevance.
+
+    Re-annotates the sentences from ``jjzha/skillskape`` against the full ESCO
+    v1.1.0 skill taxonomy with a 0-4 relevance scale, following the BEIR layout
+    (``queries``, ``corpus``, ``qrels``). Score scale: 0 unrelated, 1 plausible
+    in domain, 2 recommendable but off-granularity, 3 strongly implied,
+    4 explicitly demonstrated.
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(hf_name="TechWolf/Skill-extraction-SkillSkape-graded", **kwargs)
+
+    @property
+    def name(self) -> str:
+        """Skill extraction SkillSkape graded task name."""
+        return "Skill Extraction SkillSkape Graded"
+
+    @property
+    def description(self) -> str:
+        """Skill extraction SkillSkape graded task description."""
+        return (
+            "Extract skills from text descriptions in SkillSkape, with graded 0-4 "
+            "relevance against the full ESCO v1.1.0 taxonomy."
+        )
+
+    @property
+    def citation(self) -> str:
+        """Skill extraction SkillSkape graded task citation."""
+        return """@inproceedings{magron-etal-2024-jobskape,
+  title     = {{JobSkape: A Framework for Generating Synthetic Job Postings to Enhance Skill Matching}},
+  author    = {{Magron, Antoine and Dai, Anna and Zhang, Mike and Montariol, Syrielle and Bosselut, Antoine}},
+  editor    = {{Hruschka, Estevam and Lake, Thom and Otani, Naoki and Mitchell, Tom}},
+  booktitle = {{Proceedings of the First Workshop on Natural Language Processing for Human Resources (NLP4HR 2024)}},
+  month     = {{mar}},
+  year      = {{2024}},
+  address   = {{St. Julian's, Malta}},
+  publisher = {{Association for Computational Linguistics}},
+  url       = {{https://aclanthology.org/2024.nlp4hr-1.4/}},
+  pages     = {{43--58}}
+}
+"""
+
+
+@register_task()
+class TechWolfGradedSkillExtractRanking(BaseGradedSkillExtractRanking):
+    """Skill Extraction from TechWolf Dataset with Graded Relevance.
+
+    Re-annotates the sentences from ``TechWolf/skill-extraction-techwolf``
+    against the full ESCO v1.1.0 skill taxonomy, following the BEIR layout
+    (``queries``, ``corpus``, ``qrels``). Only a ``test`` split is published for
+    this dataset.
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(hf_name="TechWolf/Skill-extraction-TechWolf-graded", **kwargs)
+
+    @property
+    def split_to_hf_split(self) -> dict[DatasetSplit, str]:
+        """Only a test split is published for the TechWolf graded dataset."""
+        return {DatasetSplit.TEST: "test"}
+
+    @property
+    def name(self) -> str:
+        """Skill extraction TechWolf graded task name."""
+        return "Skill Extraction TechWolf Graded"
+
+    @property
+    def description(self) -> str:
+        """Skill extraction TechWolf graded task description."""
+        return (
+            "Extract skills from text descriptions in a generic distribution of job "
+            "descriptions, against the full ESCO v1.1.0 taxonomy."
+        )
+
+    @property
+    def citation(self) -> str:
+        """Skill extraction TechWolf graded task citation."""
+        return """@article{decorte2023extreme,
+  title={Extreme multi-label skill extraction training using large language models},
+  author={Decorte, Jens-Joris and Verlinden, Severine and Van Hautte, Jeroen and Deleu, Johannes and Develder, Chris and Demeester, Thomas},
+  journal={arXiv preprint arXiv:2307.10778},
+  year={2023}
 }
 """
 

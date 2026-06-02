@@ -18,19 +18,25 @@ from workrb.tasks.ranking.melo import MELORanking
 from workrb.tasks.ranking.mels import MELSRanking
 from workrb.tasks.ranking.skill2job import ESCOSkill2JobRanking
 from workrb.tasks.ranking.skill_extraction import (
+    HouseGradedSkillExtractRanking,
     HouseSkillExtractRanking,
     SkillSkapeExtractRanking,
+    SkillSkapeGradedSkillExtractRanking,
     SkillXLSkillExtractRanking,
+    TechGradedSkillExtractRanking,
     TechSkillExtractRanking,
+    TechWolfGradedSkillExtractRanking,
     TechWolfSkillExtractRanking,
 )
 from workrb.tasks.ranking.skill_similarity import SkillMatch1kSkillSimilarityRanking
-from workrb.tasks.ranking.skillnorm import ESCOSkillNormRanking
+from workrb.tasks.ranking.skillnorm import ESCOGradedSkillNormRanking, ESCOSkillNormRanking
 
 __all__ = [
+    "ESCOGradedSkillNormRanking",
     "ESCOJob2SkillRanking",
     "ESCOSkill2JobRanking",
     "ESCOSkillNormRanking",
+    "HouseGradedSkillExtractRanking",
     "HouseSkillExtractRanking",
     "JobBERTJobNormRanking",
     "JobTitleSimilarityRanking",
@@ -40,7 +46,10 @@ __all__ = [
     "SearchQueryCandidateRanking",
     "SkillMatch1kSkillSimilarityRanking",
     "SkillSkapeExtractRanking",
+    "SkillSkapeGradedSkillExtractRanking",
     "SkillXLSkillExtractRanking",
+    "TechGradedSkillExtractRanking",
     "TechSkillExtractRanking",
+    "TechWolfGradedSkillExtractRanking",
     "TechWolfSkillExtractRanking",
 ]

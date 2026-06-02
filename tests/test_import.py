@@ -6,16 +6,20 @@ from workrb import tasks
 from workrb.config import BenchmarkConfig
 from workrb.registry import TaskRegistry
 from workrb.tasks import (
+    ESCOGradedSkillNormRanking,
     ESCOJob2SkillClassification,
     ESCOJob2SkillRanking,
     ESCOSkill2JobRanking,
     ESCOSkillNormRanking,
+    HouseGradedSkillExtractRanking,
     HouseSkillExtractRanking,
     JobBERTJobNormRanking,
     RankingDataset,
     RankingTask,
     SkillMatch1kSkillSimilarityRanking,
+    SkillSkapeGradedSkillExtractRanking,
     Task,
+    TechGradedSkillExtractRanking,
     TechSkillExtractRanking,
     ranking,
 )
@@ -49,9 +53,13 @@ def test_task_ranking_imports():
     assert isinstance(ESCOSkill2JobRanking.__name__, str)
     assert isinstance(ESCOSkillNormRanking.__name__, str)
     assert isinstance(HouseSkillExtractRanking.__name__, str)
+    assert isinstance(HouseGradedSkillExtractRanking.__name__, str)
     assert isinstance(JobBERTJobNormRanking.__name__, str)
     assert isinstance(SkillMatch1kSkillSimilarityRanking.__name__, str)
     assert isinstance(TechSkillExtractRanking.__name__, str)
+    assert isinstance(TechGradedSkillExtractRanking.__name__, str)
+    assert isinstance(SkillSkapeGradedSkillExtractRanking.__name__, str)
+    assert isinstance(ESCOGradedSkillNormRanking.__name__, str)
 
     print("✓ Successfully imported ranking task classes")
 

@@ -19,14 +19,18 @@ from .ranking.melo import MELORanking
 from .ranking.mels import MELSRanking
 from .ranking.skill2job import ESCOSkill2JobRanking
 from .ranking.skill_extraction import (
+    HouseGradedSkillExtractRanking,
     HouseSkillExtractRanking,
     SkillSkapeExtractRanking,
+    SkillSkapeGradedSkillExtractRanking,
     SkillXLSkillExtractRanking,
+    TechGradedSkillExtractRanking,
     TechSkillExtractRanking,
+    TechWolfGradedSkillExtractRanking,
     TechWolfSkillExtractRanking,
 )
 from .ranking.skill_similarity import SkillMatch1kSkillSimilarityRanking
-from .ranking.skillnorm import ESCOSkillNormRanking
+from .ranking.skillnorm import ESCOGradedSkillNormRanking, ESCOSkillNormRanking
 
 __all__ = [
     # Abstract classes
@@ -39,6 +43,7 @@ __all__ = [
     # Classification tasks
     "ESCOJob2SkillClassification",
     # Ranking tasks
+    "ESCOGradedSkillNormRanking",
     "ESCOJob2SkillRanking",
     "ESCOSkill2JobRanking",
     "ESCOSkillNormRanking",
@@ -46,10 +51,14 @@ __all__ = [
     "JobTitleSimilarityRanking",
     "MELORanking",
     "MELSRanking",
+    "HouseGradedSkillExtractRanking",
     "HouseSkillExtractRanking",
+    "TechGradedSkillExtractRanking",
     "TechSkillExtractRanking",
+    "TechWolfGradedSkillExtractRanking",
     "TechWolfSkillExtractRanking",
     "SkillSkapeExtractRanking",
+    "SkillSkapeGradedSkillExtractRanking",
     "SkillXLSkillExtractRanking",
     "SkillMatch1kSkillSimilarityRanking",
     "ProjectCandidateRanking",
