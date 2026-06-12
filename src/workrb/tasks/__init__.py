@@ -17,6 +17,7 @@ from .ranking.job_similarity import JobTitleSimilarityRanking
 from .ranking.jobnorm import JobBERTJobNormRanking
 from .ranking.melo import MELORanking
 from .ranking.mels import MELSRanking
+from .ranking.naics_classification import DescriptionToIndustryRanking
 from .ranking.skill2job import ESCOSkill2JobRanking
 from .ranking.skill_extraction import (
     HouseGradedSkillExtractRanking,
@@ -63,4 +64,5 @@ __all__ = [
     "SkillMatch1kSkillSimilarityRanking",
     "ProjectCandidateRanking",
     "SearchQueryCandidateRanking",
+    "DescriptionToIndustryRanking",
 ]

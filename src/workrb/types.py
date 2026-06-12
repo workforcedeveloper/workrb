@@ -188,6 +188,9 @@ class ModelInputType(str, Enum):
     JOB_TITLE = "job_title"
     """A job title."""
 
+    COMPANY_DESCRIPTION = "company_description"
+    """A company description."""
+
     SKILL_NAME = "skill_name"
     """A skill name."""
 

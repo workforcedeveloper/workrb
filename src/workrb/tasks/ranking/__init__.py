@@ -16,6 +16,7 @@ from workrb.tasks.ranking.job_similarity import JobTitleSimilarityRanking
 from workrb.tasks.ranking.jobnorm import JobBERTJobNormRanking
 from workrb.tasks.ranking.melo import MELORanking
 from workrb.tasks.ranking.mels import MELSRanking
+from workrb.tasks.ranking.naics_classification import DescriptionToIndustryRanking
 from workrb.tasks.ranking.skill2job import ESCOSkill2JobRanking
 from workrb.tasks.ranking.skill_extraction import (
     HouseGradedSkillExtractRanking,
@@ -32,6 +33,7 @@ from workrb.tasks.ranking.skill_similarity import SkillMatch1kSkillSimilarityRan
 from workrb.tasks.ranking.skillnorm import ESCOGradedSkillNormRanking, ESCOSkillNormRanking
 
 __all__ = [
+    "DescriptionToIndustryRanking",
     "ESCOGradedSkillNormRanking",
     "ESCOJob2SkillRanking",
     "ESCOSkill2JobRanking",
