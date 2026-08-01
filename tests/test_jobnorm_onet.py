@@ -4,7 +4,7 @@ from workrb.tasks.abstract.base import Language
 
 def test_my_custom_task_loads():
     """Test that task loads without errors"""
-    task = workrb.tasks.ONETJobNormRanking(split="val", languages=["en"])
+    task = workrb.tasks.JobBERTONetJobNormRanking(split="val", languages=["en"])
     dataset_id = Language.EN.value
     dataset = task.datasets[dataset_id]
 
