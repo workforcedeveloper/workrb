@@ -1,6 +1,7 @@
 import csv
 from pathlib import Path
 
+import appdirs
 import requests
 from datasets import load_dataset
 
@@ -12,6 +13,14 @@ from workrb.types import ModelInputType
 
 @register_task()
 class JobBERTONetJobNormRanking(RankingTask):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Cache dir pattern mirrors ESCO (src/workrb/data/esco.py:130-131),
+        # but uses "workrb" as the app name.
+        cache_dir = appdirs.user_cache_dir("workrb")
+        self.base_path = Path(cache_dir) / "onet"
+        self.onet_file_path = self.base_path / "onet_30_3_occupations.txt"
+
     @property
     def name(self) -> str:
         """Job Normalization task name."""
@@ -60,24 +69,23 @@ class JobBERTONetJobNormRanking(RankingTask):
             bool
         """
         url = "https://www.onetcenter.org/dl_files/database/db_30_3_text/Occupation%20Data.txt"
-        filename = "onet_30_3_occupations.txt"
         r = requests.get(url)
         if r.status_code == 200:
-            with open(filename, "wb") as file:
+            self.base_path.mkdir(parents=True, exist_ok=True)
+            with open(self.onet_file_path, "wb") as file:
                 file.write(r.content)
                 return True
         else:
             return False
 
     def _check_onet_data_exists(self) -> bool:
-        """Loads downloaded TSV file from O*NET and forms target space
+        """Checks whether the O*NET data file already exists in the cache dir.
 
         Returns
         -------
             bool
         """
-        file_path = Path("onet_30_3_occupations.txt")
-        return file_path.is_file()
+        return self.onet_file_path.is_file()
 
     def _load_onet_target_space(self) -> dict:
         """Loads downloaded TSV file from O*NET and forms target space
@@ -87,7 +95,7 @@ class JobBERTONetJobNormRanking(RankingTask):
             target_space: dict[str, int]
         """
         target_space = {}
-        with open("onet_30_3_occupations.txt") as f:
+        with open(self.onet_file_path) as f:
             csvf = csv.DictReader(f, delimiter="\t")
             for index, row in enumerate(csvf):
                 target_space[row["Title"]] = index
@@ -104,7 +112,7 @@ class JobBERTONetJobNormRanking(RankingTask):
         -------
             RankingDataset object
         """
-        # Download file from O*NET if not in local directory
+        # Download file from O*NET if not in cache
         if not self._check_onet_data_exists():
             print("Downloading O*NET v 30.3 Occupations Data")
             self._download_onet_data()
